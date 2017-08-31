@@ -1,0 +1,72 @@
+%    Documentation for PRU ADC Project
+%    Copyright (C) 2016  Gregory Raven
+%
+%    This program is free software: you can redistribute it and/or modify
+%    it under the terms of the GNU General Public License as published by
+%    the Free Software Foundation, either version 3 of the License, or
+%    (at your option) any later version.
+%
+%    This program is distributed in the hope that it will be useful,
+%    but WITHOUT ANY WARRANTY; without even the implied warranty of
+%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%    GNU General Public License for more details.
+%
+%    You should have received a copy of the GNU General Public License
+%    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+\chapter{Introduction}
+
+This is the documentation for an embedded GNU/Linux project utilizing the RemoteProc and RPMsg framework in the Beaglebone Green (BBG) development board.  The project repository is located here:
+
+\url{https://github.com/Greg-R/pruadc1}
+
+The inspiration for this project came from the superb book ``Exploring Beaglebone'' by Derek Molloy.  Professor Molloy's project utilized assembly code and the UIO driver.  The hardware used in this project is essentially a copy of the Molloy design published on the web here:
+
+\url{http://exploringbeaglebone.com/chapter13/}
+
+Recent developments in the Texas Instruments PRU support include the RemoteProc and Remote Messaging frameworks, as well as an extensively documented C compiler and much additional supporting documentation.  This project utilizes these frameworks and is entirely dependent upon C code in both the PRU and GNU/Linux user space.  The detailed examples provided by TI in the ``PRU Support Package'' were invaluable in developing this project:
+
+\url{https://git.ti.com/pru-software-support-package}
+
+A listing of additional resources is found in the Resources chapter.
+
+An MCP3008 Analog-to-Digital Converter (ADC) IC is connected to the BBG GPIO pins which are in turn connected to the PRU using the ``Universal IO'' kernel driver which is deployed by default to the current distributions of Debian on the Beaglebones.  The PRUs communicate with a user-space C program via ``character devices'' created by the remote messaging kernel driver.  The data is pushed to a USB codec via the ``Advanced Linux Sound Architecture'', and finally, to an analog speaker.  The diagram below illustrates the flow of data through the system.
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth]{diagrams/data_flow_intro}
+	\centering\bfseries
+	\caption{Flow of Data Through the System}
+\end{figure}
+
+\section{Project Goals}
+
+This project does not solve a specific practical problem.  It is a laboratory experiment.
+
+The primary goal is to learn to program the PRUs, and to control and communicate with them from the operating system's ``user space''.  Here is a list of the project goals and sub-goals:
+
+\begin{itemize}
+	\item Write C code for the PRUs which implement a SPI bus.
+	\item Build a ``proto-cape'' with an ADC.
+	\item Use the ``Universal IO'' to configure the PRU interface to the GPIO pins.
+	\item Write a user-space C program which communicates with the PRUs via character devices.
+	\item Use the Analog Discovery 2 as a logic analyzer to debug the PRU SPI C code.
+	\item Stream the digitized audio data from the ADC to the ``Advanced Linux Sound Architecture'' in real time.  Play the audio to a speaker.
+	\item Document and publish the project to Github.
+	\item Create a brief video demonstration of the project and publish.
+\end{itemize}
+
+\section{Limitations}
+
+The BeagleBone's Sitara ``System On Chip'' is quite powerful, and this power is probably masking several inefficiencies in the project's design.  All of the testing and debugging was done with a bare-bones Debian distribution with no other significant processes running.
+
+The speaker audio does not have noticeable distortion or glitches when listening with the speaker.  The audio was not examined with a spectrum or distortion analyzer.  It may not be the best quality audio.
+
+The audio sample rate was limited to 8 kHz, which is the lowest rate accepted by ALSA.  A follow-up investigation will see if the sample rate can be increased.  It is not known what aspect of the system will begin to break down as the sample rate is increased.
+
+The sample rate had to be ``tuned'' to prevent ``buffer underruns'' reported by the ALSA system.  An approach to make the real-time data stream robust is not known by the author and needs further investigation.
+
+All of the development was done as root user via ssh on the BeagleBone Green.  This is generally not a good practice, however, considering this as an embedded and experimental project it was not considered to be a serious drawback.
+
+

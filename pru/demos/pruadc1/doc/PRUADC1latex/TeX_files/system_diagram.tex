@@ -1,0 +1,39 @@
+%    Documentation for PRU ADC Project
+%    Copyright (C) 2016  Gregory Raven
+%
+%    This program is free software: you can redistribute it and/or modify
+%    it under the terms of the GNU General Public License as published by
+%    the Free Software Foundation, either version 3 of the License, or
+%    (at your option) any later version.
+%
+%    This program is distributed in the hope that it will be useful,
+%    but WITHOUT ANY WARRANTY; without even the implied warranty of
+%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%    GNU General Public License for more details.
+%
+%    You should have received a copy of the GNU General Public License
+%    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+\chapter{System Diagram}
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{diagrams/system_ink}
+\centering\bfseries
+\caption{PRUADC System Diagram}
+\end{figure}
+
+The system diagram as shown includes all of the facilities used during development.
+
+The ``Linux Box'' is a desktop PC architecture machine running Ubuntu 14.04/16.04.  Communication to the BBG was done via ``Secure Shell'' (SSH).  The Linux Box also served as host for the Analog Discovery 2 and GUI via the HDMI display.  The Analog Discovery 2 also provided analog audio to the ADC input.
+
+The ``Beagle Bone Green'' (BBG) is the TI Sitara-based platform board manufactured by Seeed Studio.
+
+The ``ADC Cape'' is an Adafruit breadboard with the MCP3008 and headers soldered to it.  A few wires are required to complete the connections to the ADC to the header pins, DC bias and ground.
+
+The ``USB Codec'' plugs into the USB connector on the BBG.  Due to interference with the adjacent ethernet connector, a short USB extension cable is recommended.
+
+
+
+

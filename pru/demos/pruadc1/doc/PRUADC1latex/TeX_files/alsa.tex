@@ -1,0 +1,89 @@
+%    Documentation for PRU ADC Project
+%    Copyright (C) 2016  Gregory Raven
+%
+%    This program is free software: you can redistribute it and/or modify
+%    it under the terms of the GNU General Public License as published by
+%    the Free Software Foundation, either version 3 of the License, or
+%    (at your option) any later version.
+%
+%    This program is distributed in the hope that it will be useful,
+%    but WITHOUT ANY WARRANTY; without even the implied warranty of
+%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%    GNU General Public License for more details.
+%
+%    You should have received a copy of the GNU General Public License
+%    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+\chapter{Incorporating Advanced Linux Sound Architecture or ``ALSA''}
+
+The system generates a stream of audio data samples at a rate of 8 kHz.  This data could be stored to memory and later manipulated.  Derek Molloy's project used ``GNU Plot'' to graph data captured by the ADC-PRU system and stored to the Beaglebone's memory (RAM).
+
+One of the primary goals of this project was to investigate real-time data "streaming".  So rather than a static capture, it was decided that the data stream would be somehow extracted from the system and ``played'' to an analog speaker.
+
+The primary sound system in GNU/Linux is called the ``Advanced Linux Sound Architecture''.  This system is very mature and flexible, and also it has a very complex Applications Programming Interface (API).
+
+Fortunately the ALSA system includes command line utilities which made meeting the project goals very simple!
+
+\section{Pulse Code Modulation}
+
+What kind of data is delivered by the PRU as it reads the ADC via SPI bus?
+
+The ADC samples data with a ``resolution'' of 10 bits.  What this means is that the analog input of the ADC is ``quantized'' into $2^{10}$ or 1024 slices.
+
+The ADC is capable of handling an input range from a little bit above 0 Volts to a little bit below 3.3 Volts.  So a good approximation is a 3.0 Volts range.  Splitting this into 1024 slices yields:
+
+\[ \frac{\text{3.0 Volts}}{1024}  = \text{2.9 millivolts per step} \]
+
+So the natural data type which is retrieved from the ADC is an ``unsigned integer'' in the range of 0 to 1023.  Each numerical step in this range represents an absolute voltage at the input of the ADC in increments of 2.9 millivolts.
+
+``Pulse Code Modulation'' means a waveform is represented as a series of numbers, which are integers in this case.  The ALSA system is capable of handling a stream of Pulse Code Modulated integers, and the data flowing from the PRU0 to user space is perfectly compatible.
+
+ALSA handles several formats of PCM encoded data, and after numerous trials, it was found that the format ``S16\_LE'' was the easiest to deal with.  The code S16\_LE translates to ``16 bit signed integers, little endian''.
+
+The native data from the ADC is unsigned.  However, it is an easy matter to shift the data and cast it to a 16 bit signed integer:
+
+\begin{verbatim}
+    payload[dataCounter] = 50 * ((int16_t)data - 512);
+\end{verbatim}
+
+The data is shifted by 1024/2 and then cast to a 16 bit signed integer.  The multiplication fact of 50 expands the absolute range of the integers in order to better utilize the 16 bit dynamic range of the ALSA PCM system.
+
+It is possible that this transformation should be performed in user space rather than use the limited resources of the PRU.  That will be the subject of a future trial.
+
+\section{ALSA's aplay Utility Program}
+
+aplay is a command line tool which is a convenient wrapper for the ALSA soundcard driver.
+
+In a shell, type
+
+\begin{verbatim}
+man aplay
+\end{verbatim}
+
+to see the various options available for aplay.
+
+The user-space program uses aplay with options as follows:
+
+\begin{verbatim}
+aplay --format=S16_LE -Dplughw:1,0 --rate=8000 soundfifo
+\end{verbatim}
+
+This example command plays file soundfifo using a PCM format of signed 16-bit integers on soundcard 1, device 0, at a rate of 8000 samples per second.
+
+Devices can be discovered via the -l option:
+
+\begin{verbatim}
+debian@arm:~$ aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 1: Device [C-Media USB Audio Device], device 0: USB Audio [USB Audio]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+\end{verbatim}
+
+The above output was from a BeagleBone Green with a USB audio codec attached.
+
+
+
+
+
+

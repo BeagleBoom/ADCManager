@@ -4,6 +4,7 @@ project(ADCManager)
 set(CMAKE_CXX_STANDARD 11)
 
 set(SOURCE_FILES src/ADCManager.cpp)
+SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin CACHE PATH "Executable output path")
 
 # POCO
 set(ENABLE_MONGODB false)
@@ -19,6 +20,8 @@ set(CMAKE_MODULE_PATH
         ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 find_package(Poco REQUIRED JSON Util Foundation)
 
+add_executable(adcmanager ${SOURCE_FILES})
+
 find_package(EventQueue REQUIRED)
 
 target_link_libraries(adcmanager PUBLIC ${EventQueue_LIBRARY})
@@ -27,4 +30,3 @@ target_link_libraries(adcmanager PUBLIC ${Poco_Util_LIBRARY})
 target_link_libraries(adcmanager PUBLIC ${Poco_JSON_LIBRARY})
 target_link_libraries(adcmanager PUBLIC ${EventQueue_LIBRARY})
 
-add_executable(ADCManager ${SOURCE_FILES})
