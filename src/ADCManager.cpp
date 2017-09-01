@@ -1,7 +1,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <EventQueue/MessageQueue.h>
-#include <EventQueue/QueueEventEnum.h>
+#include <EventQueue/EventType.h>
 
 #define REFERENCE_VCC 5
 
@@ -20,7 +20,7 @@ struct ADCOut {
 
 void publish(ADCOut out, int queueValue) {
     MessageQueue queue = MessageQueue(queueValue);
-    Event event = Event((int) QueueEventEnum::ADC_VALUES);
+    Event event = Event(EventType::ADC_VALUES);
     event.addString("ADC");
     event.addInt(6);
     event.addInt(static_cast<int>(out.gpio6));
