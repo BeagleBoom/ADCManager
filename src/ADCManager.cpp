@@ -69,6 +69,7 @@ int main(int argc, char **argv) {
 
     while (true) {
         readpru = read(pru_data, buffer, 8);
+        std::cout << readpru << std::endl;
         if (readpru > 0) {
             ADCOut out;
             for (int j = 0; j < 3; j++) {
