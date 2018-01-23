@@ -69,7 +69,6 @@ int main(int argc, char **argv) {
 
     while (true) {
         readpru = read(pru_data, buffer, 8);
-        std::cout << readpru << std::endl;
         if (readpru > 0) {
             ADCOut out;
             for (int j = 0; j < 3; j++) {
@@ -88,6 +87,7 @@ int main(int argc, char **argv) {
                     }
                 }
             }
+            std::cout << "out.tone_adc02" << out.tone_adc02 << std::endl;
             publish(out, queueValue);
         }
 
