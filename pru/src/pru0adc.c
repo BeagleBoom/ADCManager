@@ -3,7 +3,7 @@
 // pru0adc.c
 //  Attempt to duplicate Derek Molloy's
 //  SPI ADC read program in C from assembly.
-//  Chip Select:  P9.27 pr1_pru0_pru_r30_5 // ändern: P8.20 pr1_pru1_pru_r30_130xFFFFDFFF
+//  Chip Select:  P9.27 pr1_pru0_pru_r30_5 // ändern: P8.20 pr1_pru1_pru_r30_13 0xFFFFDFFF
 //  MOSI:         P9.29 pr1_pru0_pru_r30_1 // ändern: P8.21 pr1_pru1_pru_r30_12
 //  MISO:         P9.28 pr1_pru0_pru_r31_3 // ändern: P8.27 pr1_pru1_pru_r31_8
 //  SPI CLK:      P9.30 pr1_pru0_pru_r30_2 // ändern: P8.28 pr1_pru1_pru_r30_10
@@ -47,10 +47,10 @@
 #define CHAN_DESC "Channel 30"
 #define CHAN_PORT 30
 #define PULSEWIDTH 300
-#define CLK_HIGH __R30 = __R30 | 0x00000200
-#define CLK_LOW __R30 = __R30 & 0xFFFFFDFF
-#define CS_LOW __R30 = __R30 & 0xFFFFDFFF //  Chip select to LOW P9.27
+#define CLK_HIGH __R30 = __R30 | 0x00000400
+#define CLK_LOW __R30 = __R30 & 0xFFFFFBFF
 #define CS_HIGH __R30 = __R30 | 1 << 13 //  Chip select to HIGH
+#define CS_LOW __R30 = __R30 & 0xFFFFDFFF //  Chip select to LOW P9.27
 //  Used to make sure the Linux drivers are ready for RPMsg communication
 //  Found at linux-x.y.z/include/uapi/linux/virtio_config.h
 #define VIRTIO_CONFIG_S_DRIVER_OK 4
@@ -167,7 +167,8 @@ int main(void) {
     //  Need a pointer for this address.  This is found in the linker file.
     //  The address 0x0001_000 is PRU_SHAREDMEM.
     uint32_t *clockPointer = (uint32_t *) 0x00010000;
-    __R30 = __R30 | (1 << 5);  // Initialize chip select HIGH.
+
+    CS_HIGH;  // Initialize chip select HIGH.
     __delay_cycles(100000000); //  Allow chip to stabilize.
     //  3.  SPI Data capture loop.  This captures numSamples data samples from the
     //  ADC.
