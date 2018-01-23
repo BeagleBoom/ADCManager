@@ -196,7 +196,7 @@ int main(void) {
         uint16_t adc3 = sendReceiveWord(0x00, 0x00);
 
         gpio_in = 1;
-        adc2 = 2;
+        adc2 = 0xFFFF;
         adc3 = 3;
 
         //payload[dataCounter] = gpio_in;

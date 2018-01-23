@@ -87,7 +87,7 @@ int main(int argc, char **argv) {
                     }
                 }
             }
-            std::cout << "out.tone_adc02" << out.tone_adc02 << std::endl;
+            std::cout << "out.tone_adc02 " << out.tone_adc02 << std::endl;
             publish(out, queueValue);
         }
 
