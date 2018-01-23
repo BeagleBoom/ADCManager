@@ -184,7 +184,7 @@ int main(void) {
     initADC();
 
     while (1) {
-        sendWord(0x50, 0xC0); // Setup PIN 6,7 as GPIO in
+        /*sendWord(0x50, 0xC0); // Setup PIN 6,7 as GPIO in
         sendWord(0x00, 0x00); // Nop it
         sendWord(0x54, 0xC0); // receive gpios
         uint16_t gpio_in = sendReceiveWord(0x00, 0x00);
@@ -204,7 +204,13 @@ int main(void) {
         dataCounter = 0;
         while (pru_rpmsg_receive(&transport, &src, &dst, payload, &len) !=
                PRU_RPMSG_SUCCESS) {
-        }
+        }*/
+        CLK_HIGH;
+        __delay_cycles(PULSEWIDTH);
+
+        CLK_LOW;
+        __delay_cycles(PULSEWIDTH);
+
     } //  End data acquisition loop.
 
     //   __R31 = 35;                      // PRUEVENT_0 on PRU0_R31_VEC_VALID
