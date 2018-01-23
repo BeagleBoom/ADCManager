@@ -199,7 +199,6 @@ int main(void) {
         adc2 = 0xFFFF;
         adc3 = 3;
 
-        //payload[dataCounter] = gpio_in;
         payload[dataCounter] = gpio_in;
         payload[dataCounter + 1] = adc2;
         payload[dataCounter + 2] = adc3;

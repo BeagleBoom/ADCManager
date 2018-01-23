@@ -20,7 +20,7 @@ struct ADCOut {
 
 void publish(ADCOut out, int queueValue) {
     MessageQueue queue = MessageQueue(queueValue);
-    std::cout << out.tone_adc02 << "; " << out.tone_adc03 << "; " << out.gpio7 << "; " << out.gpio6 << std::endl;
+    //std::cout << out.tone_adc02 << "; " << out.tone_adc03 << "; " << out.gpio7 << "; " << out.gpio6 << std::endl;
     Event event = Event(EventType::ADC_VALUES);
     event.addString("ADC");
     event.addInt(6);
@@ -73,6 +73,7 @@ int main(int argc, char **argv) {
         if (readpru > 0) {
             ADCOut out;
             for (int j = 0; j < 3; j++) {
+                std::cout << buffer[j] << std::endl;
                 if ((buffer[j] >> 8) == 0) {
                     // GPIO Input value
                     out.gpio6 = static_cast<bool>((buffer[j] >> 6) & 1);
