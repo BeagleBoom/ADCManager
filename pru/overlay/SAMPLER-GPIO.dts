@@ -4,6 +4,7 @@
 /{
     compatible = "ti,beaglebone", "ti,beaglebone-black","ti,beaglebone-green";
     part_number = "SAMPLER-GPIO";
+    version = "00A0";
 
     exclusive-use =
         "P8.3",

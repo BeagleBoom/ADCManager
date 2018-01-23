@@ -21,7 +21,6 @@ LNK_CMDS2=-i$(PRU_CGT)/includeSupportPackage/am335x --reread_libs --stack_size=0
 LNK_CMDS3=--heap_size=0x100 --library=$(PRU_CGT)/lib/rpmsg_lib.lib
 
 all: $(SOURCES)
-	gcc -std=c99 ./user_space/fork_pcm_pru.c -o ./user_space/fork_pcm_pru
 	export PRU_CGT=/usr/share/ti/cgt-pru
 	clpru $(CFLAGS) pru0adc.c $(LNK_CMDS1) $(LNK_CMDS2) $(LNK_CMDS3) ./AM335x_PRU.cmd -o ./result/am335x-pru0-fw --library=libc.a
 	clpru $(CFLAGS) pru1adc.c $(LNK_CMDS1) $(LNK_CMDS2) $(LNK_CMDS3) ./AM335x_PRU.cmd -o ./result/am335x-pru1-fw --library=libc.a
@@ -29,6 +28,5 @@ all: $(SOURCES)
 	cp ./result/am335x-pru0-fw /lib/firmware
 	cp ./result/am335x-pru1-fw /lib/firmware
 	rmmod pru_rproc -f && modprobe pru_rproc
-clean:
-	rm ./user_space/soundfifo
+
 
