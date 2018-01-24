@@ -167,7 +167,7 @@ int main(void) {
     //  Need a pointer for this address.  This is found in the linker file.
     //  The address 0x0001_000 is PRU_SHAREDMEM.
     uint32_t *clockPointer = (uint32_t *) 0x00010000;
-CS_LOW
+CS_LOW;
     //CS_HIGH;  // Initialize chip select HIGH.
     __delay_cycles(100000000); //  Allow chip to stabilize.
     //  3.  SPI Data capture loop.  This captures numSamples data samples from the
