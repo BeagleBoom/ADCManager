@@ -65,8 +65,11 @@ int main(int argc, char **argv) {
     // start reading the adc
     std::cout << "Syncing with pru_clock" << std::endl;
     pru_clock_command = write(pru_clock, "g", 2);
-    if (pru_clock_command < 0)
+    if (pru_clock_command < 0){
         std::cout << "The pru clock start command failed." << std::endl;
+        return 0;
+    }
+    std::cout << "... done!" << std::endl;
 
     while (true) {
         readpru = read(pru_data, buffer, 8);

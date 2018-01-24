@@ -131,7 +131,6 @@ int main(void) {
     struct pru_rpmsg_transport transport;
     uint16_t src, dst, len;
     volatile uint8_t *status;
-    initADC();
     //  1.  Enable OCP Master Port
     CT_CFG.SYSCFG_bit.STANDBY_INIT = 0;
     //  Clear the status of PRU-ICSS system event that the ARM will use to 'kick'
@@ -159,6 +158,7 @@ int main(void) {
     while (pru_rpmsg_receive(&transport, &src, &dst, payload, &len) !=
            PRU_RPMSG_SUCCESS) {
     }
+
 
     //  2.  Initialization
     //  The data out line is connected to R30 bit 1.
@@ -194,6 +194,10 @@ int main(void) {
 
         uint16_t adc2 = sendReceiveWord(0x00, 0x00);
         uint16_t adc3 = sendReceiveWord(0x00, 0x00);
+
+        gpio_in = 1;
+        adc2 = 2;
+        adc3 = 3;
 
         payload[dataCounter] = gpio_in;
         payload[dataCounter + 1] = adc2;
