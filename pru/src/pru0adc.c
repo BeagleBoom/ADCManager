@@ -35,8 +35,8 @@ volatile register uint32_t __R31;
 // tree
 // PRU0 uses system event 16 (To ARM) and 17 (From ARM)
 // PRU1 uses system event 18 (To ARM) and 19 (From ARM)
-#define TO_ARM_HOST 18
-#define FROM_ARM_HOST 19
+#define TO_ARM_HOST 16
+#define FROM_ARM_HOST 17
 
 // Using the name 'rpmsg-pru' will probe the rpmsg_pru driver found
 // at linux-x.y.z/drivers/rpmsg/rpmsg_pru.c

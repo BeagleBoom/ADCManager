@@ -38,8 +38,8 @@
 //  tree.
 //  PRU0 uses system event 16 (to ARM) and 17 (from ARM)
 //  PRU1 uses system event 18 (to ARM) and 19 (from ARM)
-#define TO_ARM_HOST 16
-#define FROM_ARM_HOST 17
+#define TO_ARM_HOST 18
+#define FROM_ARM_HOST 19
 
 //  Using the name 'rpmsg-pru' will probe the rpmsg_pru driver found
 //  at linux-x.y.x/drivers/rpmsg_pru.c
