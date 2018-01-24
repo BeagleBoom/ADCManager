@@ -177,9 +177,12 @@ int main(void) {
     //  The following is a hack to solve a problem with the loop running
     // while(!(*clockPointer)){__delay_cycles(5);}  //  Hold until the Master
     // clock from PRU1 goes high.
-    while (!(*clockPointer == 7)) {
+
+    /* while (!(*clockPointer == 7)) {
         __delay_cycles(5);
-    } //  Hold until the Master clock from PRU1 goes high.
+    }*/ //  Hold until the Master clock from PRU1 goes high.
+
+
 
     initADC();
 
@@ -194,6 +197,8 @@ int main(void) {
 
         uint16_t adc2 = sendReceiveWord(0x00, 0x00);
         uint16_t adc3 = sendReceiveWord(0x00, 0x00);
+
+        gpio_in = 1;
 
         payload[dataCounter] = gpio_in;
         payload[dataCounter + 1] = adc2;

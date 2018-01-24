@@ -96,6 +96,6 @@ int main(int argc, char **argv) {
         }
 
         // tell PRU that we processed the values
-       // write(pru_data, "ok", 3);
+        write(pru_data, "ok", 3);
     }
 }
