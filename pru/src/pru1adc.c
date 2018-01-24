@@ -205,7 +205,8 @@ int main(void) {
         payload[dataCounter + 2] = adc3;
 
         dataCounter = dataCounter + 3;
-        pru_rpmsg_send(&transport, dst, src, payload, 6);
+        //pru_rpmsg_send(&transport, dst, src, payload, 6);
+        pru_rpmsg_send(&transport, dst, src, 1, 1);
         dataCounter = 0;
         while (pru_rpmsg_receive(&transport, &src, &dst, payload, &len) !=
                PRU_RPMSG_SUCCESS) {
