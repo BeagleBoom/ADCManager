@@ -59,7 +59,7 @@ int main(int argc, char **argv) {
     //  The character device must be "primed".
     prime_char = write(pru_data, "prime", 6);
     if (prime_char < 0)
-        std::cout << "Failed to prime the PRU1 char device." << std::endl;
+        std::cout << "Failed to prime the PRU0 char device." << std::endl;
     //  Now open the PRU1 clock control char device and start the clock.
     pru_clock = open("/dev/rpmsg_pru31", O_RDWR);
     // start reading the adc
