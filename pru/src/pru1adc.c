@@ -198,13 +198,16 @@ int main(void) {
         uint16_t adc2 = sendReceiveWord(0x00, 0x00);
         uint16_t adc3 = sendReceiveWord(0x00, 0x00);
 
+        gpio_in=1;
+        adc2 = 2;
+        adc3 = 3;
+
         payload[dataCounter] = gpio_in;
         payload[dataCounter + 1] = adc2;
         payload[dataCounter + 2] = adc3;
 
         dataCounter = dataCounter + 3;
-        //pru_rpmsg_send(&transport, dst, src, payload, 6);
-        pru_rpmsg_send(&transport, dst, src, 1, 1);
+        pru_rpmsg_send(&transport, dst, src, payload, 6);
         dataCounter = 0;
         while (pru_rpmsg_receive(&transport, &src, &dst, payload, &len) !=
                PRU_RPMSG_SUCCESS) {
