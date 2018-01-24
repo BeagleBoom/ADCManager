@@ -131,7 +131,7 @@ int main(void) {
     struct pru_rpmsg_transport transport;
     uint16_t src, dst, len;
     volatile uint8_t *status;
-
+    initADC();
     //  1.  Enable OCP Master Port
     CT_CFG.SYSCFG_bit.STANDBY_INIT = 0;
     //  Clear the status of PRU-ICSS system event that the ARM will use to 'kick'
