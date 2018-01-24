@@ -7,7 +7,7 @@
 //  MOSI:         P9.29 pr1_pru0_pru_r30_1 // ändern: P8.21 pr1_pru1_pru_r30_12
 //  MISO:         P9.28 pr1_pru0_pru_r31_3 // ändern: P8.27 pr1_pru1_pru_r31_8
 //  SPI CLK:      P9.30 pr1_pru0_pru_r30_2 // ändern: P8.28 pr1_pru1_pru_r30_10
-//  Sample Clock: P8.46 pr1_pru1_pru_r30_1  (testing only)
+//  Sample Clock: P8.46 pr1_pru1_pru_r30_1 // P8.46 pr1_pru1_pru_r30_1 (testing only)
 //  Copyright (C) 2016  Gregory Raven
 //
 //  This program is free software: you can redistribute it and/or modify
@@ -167,8 +167,8 @@ int main(void) {
     //  Need a pointer for this address.  This is found in the linker file.
     //  The address 0x0001_000 is PRU_SHAREDMEM.
     uint32_t *clockPointer = (uint32_t *) 0x00010000;
-CS_LOW;
-    //CS_HIGH;  // Initialize chip select HIGH.
+
+    CS_HIGH;  // Initialize chip select HIGH.
     __delay_cycles(100000000); //  Allow chip to stabilize.
     //  3.  SPI Data capture loop.  This captures numSamples data samples from the
     //  ADC.

@@ -107,11 +107,11 @@ int main(void) {
   *clockPointer = 0; //  Clear this memory location.
 
   while (1) {
-    __R30 = __R30 | (1 << 11); // P9.30
+    __R30 = __R30 | (1 << 1); // P9.30
     *clockPointer = 7;
     __delay_cycles(1000); 
     *clockPointer = 0;
-    __R30 = __R30 & (0 << 11);
+    __R30 = __R30 & (0 << 1);
     //  The following delay will set the clock rate.
     //  This delay was originally 24000 cycles; it was reduced due to ALSA underruns.
     __delay_cycles(23980); 
