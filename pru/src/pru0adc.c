@@ -17,7 +17,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "resource_table_1.h"
+#include "resource_table_0.h"
 #include <am335x/pru_cfg.h>
 #include <am335x/pru_intc.h>
 #include <pru_rpmsg.h>
