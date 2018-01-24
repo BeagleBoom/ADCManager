@@ -93,9 +93,10 @@ int main(int argc, char **argv) {
                 }
             }
             publish(out, queueValue);
+
+            // tell PRU that we processed the values
+            write(pru_data, "ok", 3);
         }
 
-        // tell PRU that we processed the values
-        write(pru_data, "ok", 3);
     }
 }
