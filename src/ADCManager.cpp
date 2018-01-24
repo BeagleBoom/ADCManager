@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
     //  Now, open the PRU character device.
     //  Read data from it in chunks and write to the named pipe.
     ssize_t readpru, prime_char, pru_clock_command;
-    pru_data = open("/dev/rpmsg_pru31", O_RDWR);
+    pru_data = open("/dev/rpmsg_pru30", O_RDWR);
     if (pru_data < 0)
         std::cout << "Failed to open pru character device rpmsg_pru31." << std::endl;
     //  The character device must be "primed".
@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
     if (prime_char < 0)
         std::cout << "Failed to prime the PRU0 char device." << std::endl;
     //  Now open the PRU1 clock control char device and start the clock.
-    pru_clock = open("/dev/rpmsg_pru30", O_RDWR);
+    pru_clock = open("/dev/rpmsg_pru31", O_RDWR);
     // start reading the adc
     std::cout << "Syncing with pru_clock" << std::endl;
     pru_clock_command = write(pru_clock, "g", 2);
