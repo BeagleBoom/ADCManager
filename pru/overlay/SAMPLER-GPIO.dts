@@ -117,10 +117,10 @@
             sampler_adc: SAMPLER_ADC {
                 pinctrl-single,pins = <
                 0x0e0 0x26 /* ADC MISO */
-                0x0e8 0x15 /* ADC CLK */
-                0x084 0x15 /* ADC CS */
-                0x080 0x5  /* ADC MOSI */
-                0x0a4 0x5  /* ADC SOFTWARECLK */
+                0x0e8 0xd /* ADC CLK */
+                0x084 0xd /* ADC CS */
+                0x080 0xd  /* ADC MOSI */
+                0x0a4 0xd  /* ADC SOFTWARECLK */
                 >;
             };
         };
