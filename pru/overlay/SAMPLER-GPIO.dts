@@ -154,10 +154,11 @@
                 pinctrl-single,pins = <0x0e0 0x2e>;
             };
 
-            /* ADC CLK */
+            /* ADC CLK
             bs_pinmode_P8_28_0x15: pinmux_bs_pinmode_P8_28_0x15 {
                 pinctrl-single,pins = <0x0e8 0x15>;
             };
+*/
             bs_pinmode_P8_29_0x2f: pinmux_bs_pinmode_P8_29_0x2f {
                 pinctrl-single,pins = <0x0e4 0x2f>;
             };
@@ -343,14 +344,14 @@
                 pinctrl-0 = <&bs_pinmode_P8_27_0x2e>;
             };
 
-            /* ADC CLK */
+            /* ADC CLK
             bs_pinmode_P8_28_0x15_pinmux {
                 compatible = "bone-pinmux-helper";
                 status = "okay";
                 pinctrl-names = "default";
                 pinctrl-0 = <&bs_pinmode_P8_28_0x15>;
             };
-
+*/
             bs_pinmode_P8_29_0x2f_pinmux {
                 compatible = "bone-pinmux-helper";
                 status = "okay";
