@@ -47,8 +47,8 @@
 #define CHAN_DESC "Channel 30"
 #define CHAN_PORT 30
 #define PULSEWIDTH 300
-#define CLK_HIGH __R30 = __R30 | 0x00000000
-#define CLK_LOW __R30 = __R30 & 0xFFFFFFFF
+#define CLK_HIGH __R30 = __R30 | 0x00000400
+#define CLK_LOW __R30 = __R30 & 0xFFFFFBFF
 #define CS_HIGH __R30 = __R30 | 1 << 13 //  Chip select to HIGH
 #define CS_LOW __R30 = __R30 & 0xFFFFDFFF //  Chip select to LOW P9.27
 //  Used to make sure the Linux drivers are ready for RPMsg communication
@@ -184,7 +184,7 @@ int main(void) {
     initADC();
 
     while (1) {
-        /*sendWord(0x50, 0xC0); // Setup PIN 6,7 as GPIO in
+        sendWord(0x50, 0xC0); // Setup PIN 6,7 as GPIO in
         sendWord(0x00, 0x00); // Nop it
         sendWord(0x54, 0xC0); // receive gpios
         uint16_t gpio_in = sendReceiveWord(0x00, 0x00);
@@ -204,13 +204,7 @@ int main(void) {
         dataCounter = 0;
         while (pru_rpmsg_receive(&transport, &src, &dst, payload, &len) !=
                PRU_RPMSG_SUCCESS) {
-        }*/
-        CLK_HIGH;
-        __delay_cycles(PULSEWIDTH);
-
-        CLK_LOW;
-        __delay_cycles(PULSEWIDTH);
-
+        }
     } //  End data acquisition loop.
 
     //   __R31 = 35;                      // PRUEVENT_0 on PRU0_R31_VEC_VALID
