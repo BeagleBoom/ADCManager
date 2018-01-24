@@ -76,6 +76,7 @@ int main(int argc, char **argv) {
         if (readpru > 0) {
             ADCOut out;
             for (int j = 0; j < 3; j++) {
+                std::cout << buffer[j] << std::endl;
                 if ((buffer[j] >> 8) == 0) {
                     // GPIO Input value
                     out.gpio6 = static_cast<bool>((buffer[j] >> 6) & 1);
