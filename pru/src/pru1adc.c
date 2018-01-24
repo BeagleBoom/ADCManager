@@ -47,10 +47,10 @@
 #define CHAN_DESC "Channel 30"
 #define CHAN_PORT 30
 #define PULSEWIDTH 300
-#define CLK_HIGH __R30 = 0x00000000
-#define CLK_LOW __R30 = 0xFFFFFFFF
-#define CS_HIGH __R30 = __R30 | 1 << 13 //  Chip select to HIGH
-#define CS_LOW __R30 = __R30 & 0xFFFFDFFF //  Chip select to LOW P9.27
+#define CLK_HIGH __R30 = __R30 | (1 << 10)
+#define CLK_LOW __R30 = __R30 & ~(1 << 10)
+#define CS_HIGH __R30 = __R30 | (1 << 13) //  Chip select to HIGH
+#define CS_LOW __R30 = __R30 & ~(1 << 13) //  Chip select to LOW P9.27
 //  Used to make sure the Linux drivers are ready for RPMsg communication
 //  Found at linux-x.y.z/include/uapi/linux/virtio_config.h
 #define VIRTIO_CONFIG_S_DRIVER_OK 4
@@ -167,8 +167,8 @@ int main(void) {
     //  Need a pointer for this address.  This is found in the linker file.
     //  The address 0x0001_000 is PRU_SHAREDMEM.
     uint32_t *clockPointer = (uint32_t *) 0x00010000;
-
-    CS_HIGH;  // Initialize chip select HIGH.
+CS_LOW
+    //CS_HIGH;  // Initialize chip select HIGH.
     __delay_cycles(100000000); //  Allow chip to stabilize.
     //  3.  SPI Data capture loop.  This captures numSamples data samples from the
     //  ADC.
