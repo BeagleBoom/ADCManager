@@ -47,8 +47,8 @@
 #define CHAN_DESC "Channel 30"
 #define CHAN_PORT 30
 #define PULSEWIDTH 300
-#define CLK_HIGH __R30 = __R30 | 0x00000400
-#define CLK_LOW __R30 = __R30 & 0xFFFFFBFF
+#define CLK_HIGH __R30 = __R30 | 0x00000000
+#define CLK_LOW __R30 = __R30 & 0xFFFFFFFF
 #define CS_HIGH __R30 = __R30 | 1 << 13 //  Chip select to HIGH
 #define CS_LOW __R30 = __R30 & 0xFFFFDFFF //  Chip select to LOW P9.27
 //  Used to make sure the Linux drivers are ready for RPMsg communication
