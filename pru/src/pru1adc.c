@@ -118,7 +118,7 @@ uint16_t sendReceiveWord(char d1, char d2) {
     CS_HIGH;
     __delay_cycles(PULSEWIDTH);
     // TODO: WHY SHIFTING RIGHT BY ONE?
-    return (((r1 << 8) & 0xFF00) | (r2 & 0x00FF)) >> 1;
+    return (((r1 << 8) & 0xFF00) | (r2 & 0x00FF)); //  >> 1;
 }
 
 void initADC() {
