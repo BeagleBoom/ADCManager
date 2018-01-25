@@ -16,6 +16,10 @@ struct ADCOut {
     bool gpio7;
     int tone_adc02 = 0;
     int tone_adc03 = 0;
+    int adc0 = 0;
+    int adc1 = 0;
+    int adc4 = 0;
+    int adc5 = 0;
 };
 
 void publish(ADCOut out, int queueValue) {
@@ -23,17 +27,29 @@ void publish(ADCOut out, int queueValue) {
     std::cout << out.tone_adc02 << "; " << out.tone_adc03 << "; " << out.gpio7 << "; " << out.gpio6 << std::endl;
     Event event = Event(EventType::ADC_VALUES);
     event.addString("ADC");
-    event.addInt(6);
-    event.addInt(static_cast<int>(out.gpio6));
+    event.addInt(0);
+    event.addInt(out.adc0);
 
-    event.addInt(7);
-    event.addInt(static_cast<int>(out.gpio7));
+    event.addInt(1);
+    event.addInt(out.adc1);
 
     event.addInt(2);
     event.addInt(out.tone_adc02);
 
     event.addInt(3);
     event.addInt(out.tone_adc03);
+
+    event.addInt(4);
+    event.addInt(out.adc4);
+
+    event.addInt(5);
+    event.addInt(out.adc5);
+
+    event.addInt(6);
+    event.addInt(static_cast<int>(out.gpio6));
+
+    event.addInt(7);
+    event.addInt(static_cast<int>(out.gpio7));
 
     queue.send(event);
 }
@@ -65,29 +81,53 @@ int main(int argc, char **argv) {
     // start reading the adc
     std::cout << "Syncing with pru_clock" << std::endl;
     pru_clock_command = write(pru_clock, "g", 2);
-    if (pru_clock_command < 0){
+    if (pru_clock_command < 0) {
         std::cout << "The pru clock start command failed." << std::endl;
         return 0;
     }
     std::cout << "... done!" << std::endl;
 
     while (true) {
-        readpru = read(pru_data, buffer, 8);
+        readpru = read(pru_data, buffer, 16);
         if (readpru > 0) {
             ADCOut out;
-            for (int j = 0; j < 3; j++) {
-                if ((buffer[j] >> 8) == 0) {
+            for (int j = 0; j < 7; j++) {
+                if ((buffer[j] & 0x00FF) == 0) {
                     // GPIO Input value
-                    out.gpio6 = static_cast<bool>((buffer[j] >> 6) & 1);
-                    out.gpio7 = static_cast<bool>((buffer[j] >> 7) & 1);
+                    int16_t value = buffer[j] >> 8;
+                    out.gpio6 = static_cast<bool>((value >> 6) & 1);
+                    out.gpio7 = static_cast<bool>((value >> 7) & 1);
                 } else {
                     // ADC values
                     int16_t value = static_cast<int16_t>(buffer[j] & 0x0fff);
                     int tone = getTone(value);
-                    if ((buffer[j] >> 12) == 0x1) {
-                        out.tone_adc02 = tone;
-                    } else if ((buffer[j] >> 12) == 0x2) {
-                        out.tone_adc03 = tone;
+                    int16_t adcIndex = buffer[j] >> 12;
+                    switch (adcIndex) {
+                        case 0x0: {
+                            out.adc0 = value;
+                            break;
+                        }
+                        case 0x1: {
+                            out.adc1 = value;
+                            break;
+                        }
+                        case 0x2: {
+                            out.tone_adc02 = tone;
+                            break;
+                        }
+                        case 0x3: {
+                            out.tone_adc03 = tone;
+                            break;
+                        }
+                        case 0x4: {
+                            out.adc4 = value;
+                            break;
+                        }
+                        case 0x5: {
+                            out.adc5 = value;
+                            break;
+                        }
+
                     }
                 }
             }

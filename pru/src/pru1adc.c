@@ -56,7 +56,7 @@
 #define VIRTIO_CONFIG_S_DRIVER_OK 4
 
 //  Buffer used for PRU to ARM communication.
-int16_t payload[4];
+int16_t payload[9];
 
 #define PRU_SHAREDMEM 0x00010000
 #define CMD_NOP ((uint32_t) 0x00000000)
@@ -186,24 +186,35 @@ int main(void) {
     initADC();
 
     while (1) {
-        sendWord(0x50, 0xC0); // Setup PIN 6,7 as GPIO in
+        // Setup PIN 6,7 as GPIO in
+        sendWord(0x50, 0xC0);
         sendWord(0x00, 0x00); // Nop it
-        sendWord(0x54, 0xC0); // receive gpios
+        sendWord(0x54, 0xC0);
+        // receive gpios
         uint16_t gpio_in = sendReceiveWord(0x00, 0x00);
 
-        sendWord(0x20, 0x0c); // configure ADC sequence to 2, 3 and repeat
+        // configure ADC sequence to 0, 1, 2, 3, 4, 5 and repeat
+        sendWord(0x20, 0x3F);
         sendWord(0x00, 0x00); // send NOP
 
+        uint16_t adc0 = sendReceiveWord(0x00, 0x00);
+        uint16_t adc1 = sendReceiveWord(0x00, 0x00);
         uint16_t adc2 = sendReceiveWord(0x00, 0x00);
         uint16_t adc3 = sendReceiveWord(0x00, 0x00);
+        uint16_t adc4 = sendReceiveWord(0x00, 0x00);
+        uint16_t adc5 = sendReceiveWord(0x00, 0x00);
 
-        payload[dataCounter] = gpio_in;
-        payload[dataCounter + 1] = adc2;
-        payload[dataCounter + 2] = adc3;
 
-        dataCounter = dataCounter + 3;
-        pru_rpmsg_send(&transport, dst, src, payload, 6);
-        dataCounter = 0;
+
+        payload[0] = gpio_in;
+        payload[1] = adc0;
+        payload[2] = adc1;
+        payload[3] = adc2;
+        payload[4] = adc3;
+        payload[5] = adc4;
+        payload[6] = adc5;
+
+        pru_rpmsg_send(&transport, dst, src, payload, 14);
         while (pru_rpmsg_receive(&transport, &src, &dst, payload, &len) !=
                PRU_RPMSG_SUCCESS) {
         }
