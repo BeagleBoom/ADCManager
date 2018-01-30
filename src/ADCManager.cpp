@@ -95,7 +95,7 @@ int main(int argc, char **argv) {
             ADCOut out;
             std::cout << "\033[2J\033[1;1H";
 
-            for (int j = 0; j < 15; j++) {
+            for (int j = 0; j < 7; j++) {
                 std::cout << "j: " << j << " = " << std::hex << buffer[j] << std::endl;
 
                 if ((buffer[j] & 0x8000)) { // first bit is "1", so it's an GPIO value
