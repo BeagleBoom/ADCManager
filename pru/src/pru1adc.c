@@ -188,8 +188,24 @@ int main(void) {
 
 
     initADC();
-
+    int cnt = 0;
+    int adc2_sum = 0;
+    int adc3_sum = 0;
     while (1) {
+        if(cnt == 16){
+            cnt = 0;
+            payload[3] = adc2_sum >> 4;
+            payload[4] = adc3_sum >> 4;
+
+            adc2_sum = 0;
+            adc3_sum = 0;
+
+            pru_rpmsg_send(&transport, dst, src, payload, 14);
+            while (pru_rpmsg_receive(&transport, &src, &dst, payload, &len) !=
+                   PRU_RPMSG_SUCCESS) {
+            }
+        }
+
         // Setup PIN 6,7 as GPIO in
         sendWord(0x50, 0xC0);
         sendWord(0x00, 0x00); // Nop it
@@ -237,11 +253,10 @@ int main(void) {
         payload[5] = adc4;
         payload[6] = adc5;
 
+        adc2_sum += adc2;
+        adc3_sum += adc3;
 
-        pru_rpmsg_send(&transport, dst, src, payload, 14);
-        while (pru_rpmsg_receive(&transport, &src, &dst, payload, &len) !=
-               PRU_RPMSG_SUCCESS) {
-        }
+        cnt++;
     } //  End data acquisition loop.
 
     //   __R31 = 35;                      // PRUEVENT_0 on PRU0_R31_VEC_VALID
