@@ -97,7 +97,7 @@ int main(int argc, char **argv) {
                 if ((buffer[j] & 0x8000)) { // first bit is "1", so it's an GPIO value
                     // GPIO Input value
                     int16_t value = buffer[j];
-                    std::cout << "BUFFER: " << buffer[j] << "; GPIO6: " << (value >> 6) << "; GPIO7: " << (value >> 7)
+                    std::cout << "BUFFER: " << std::hex << buffer[j] << "; GPIO6: " << std::hex << (value >> 6) << "; GPIO7: " << std::hex << (value >> 7)
                               << std::endl;
                     out.gpio6 = static_cast<bool>((value >> 6) & 1);
                     out.gpio7 = static_cast<bool>((value >> 7) & 1);
