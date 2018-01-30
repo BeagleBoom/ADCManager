@@ -217,6 +217,15 @@ int main(void) {
         if(adc2 & 0x8000){
             adc2 = 0xF0F0;
         }
+        if(adc3 & 0x8000){
+            adc3 = 0xF0F0;
+        }
+        if(adc4 & 0x8000){
+            adc4 = 0xF0F0;
+        }
+        if(adc5 & 0x8000){
+            adc5 = 0xF0F0;
+        }
 
         payload[1] = adc0;
         payload[2] = adc1;
