@@ -88,7 +88,7 @@ short sendSPICommand(char command) {
         else
             data = data & 0xFFFE; // might also be wrong...
     }
-    return data >> 1;
+    return data;
 }
 
 void sendWord(char d1, char d2) {
@@ -118,7 +118,7 @@ uint16_t sendReceiveWord(char d1, char d2) {
     CS_HIGH;
     __delay_cycles(PULSEWIDTH);
     // TODO: WHY SHIFTING RIGHT BY ONE?
-    return (((r1 << 8) & 0xFF00) | (r2 & 0x00FF)); //  >> 1;
+    return (((r1 << 8) & 0xFF00) | (r2 & 0x00FF))  >> 1;
 }
 
 void initADC() {
