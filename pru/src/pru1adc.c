@@ -56,7 +56,7 @@
 #define VIRTIO_CONFIG_S_DRIVER_OK 4
 
 //  Buffer used for PRU to ARM communication.
-int16_t payload[3];
+int16_t payload[7];
 
 #define PRU_SHAREDMEM 0x00010000
 #define CMD_NOP ((uint32_t) 0x00000000)
@@ -205,8 +205,12 @@ int main(void) {
         payload[0] = gpio_in | 0x8000; // set first bit to "1" so we can see whether it's an GPIO or ADC value
         payload[1] = adc0;
         payload[2] = adc1;
+        payload[3] = adc2;
+        payload[4] = adc3;
+        payload[5] = adc4;
+        payload[6] = adc5;
 
-        pru_rpmsg_send(&transport, dst, src, payload, 6);
+        pru_rpmsg_send(&transport, dst, src, payload, 14);
         while (pru_rpmsg_receive(&transport, &src, &dst, payload, &len) !=
                PRU_RPMSG_SUCCESS) {
         }
