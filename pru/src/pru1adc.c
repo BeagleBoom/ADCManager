@@ -86,7 +86,7 @@ short sendSPICommand(char command) {
         if (__R31 & (1 << 8)) //  Probe MISO data from ADC.
             data = data | 1; // might be wrong! ReCheck!
         else
-            data = data & ~(1); // might also be wrong...
+            data = data & 0xFFFE; // might also be wrong...
     }
     return data;
 }
