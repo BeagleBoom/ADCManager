@@ -200,6 +200,10 @@ int main(void) {
 
         uint16_t adc0 = sendReceiveWord(0x00, 0x00);
         uint16_t adc1 = sendReceiveWord(0x00, 0x00);
+        uint16_t adc2 = sendReceiveWord(0x00, 0x00);
+        uint16_t adc3 = sendReceiveWord(0x00, 0x00);
+        uint16_t adc4 = sendReceiveWord(0x00, 0x00);
+        uint16_t adc5 = sendReceiveWord(0x00, 0x00);
         sendWord(0x00, 0x00); // send NOP;
 
         payload[0] = gpio_in | 0x8000; // set first bit to "1" so we can see whether it's an GPIO or ADC value
