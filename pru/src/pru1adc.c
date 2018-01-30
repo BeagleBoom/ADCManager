@@ -207,12 +207,12 @@ int main(void) {
         sendWord(0x00, 0x00); // send NOP;
 
         payload[0] = gpio_in | 0x8000; // set first bit to "1" so we can see whether it's an GPIO or ADC value
-        payload[1] = adc0;
-        payload[2] = adc1;
+        payload[1] = 0;
+        payload[2] = 0;
         payload[3] = adc2;
         payload[4] = adc3;
-        payload[5] = adc4;
-        payload[6] = adc5;
+        payload[5] = 0;
+        payload[6] = 0;
 
         pru_rpmsg_send(&transport, dst, src, payload, 14);
         while (pru_rpmsg_receive(&transport, &src, &dst, payload, &len) !=
