@@ -74,7 +74,7 @@ short sendSPICommand(char command) {
         if (bit) {
             __R30 = __R30 | (bit << 12);
         } else {
-            __R30 = __R30 & (0xFFFFEFFF);
+            __R30 = __R30 & ~(bit << 12);
         }
 
         __delay_cycles(PULSEWIDTH);
@@ -86,7 +86,7 @@ short sendSPICommand(char command) {
         if (__R31 & (1 << 8)) //  Probe MISO data from ADC.
             data = data | 1; // might be wrong! ReCheck!
         else
-            data = data & 0xFF7F; // might also be wrong...
+            data = data & ~(1); // might also be wrong...
     }
     return data;
 }
@@ -203,8 +203,6 @@ int main(void) {
         uint16_t adc3 = sendReceiveWord(0x00, 0x00);
         uint16_t adc4 = sendReceiveWord(0x00, 0x00);
         uint16_t adc5 = sendReceiveWord(0x00, 0x00);
-
-
 
         payload[0] = gpio_in;
         payload[1] = adc0;
