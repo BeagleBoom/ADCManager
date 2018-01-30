@@ -46,7 +46,7 @@
 #define CHAN_NAME "rpmsg-pru"
 #define CHAN_DESC "Channel 30"
 #define CHAN_PORT 30
-#define PULSEWIDTH 300
+#define PULSEWIDTH 600
 #define CLK_HIGH __R30 = __R30 | (1 << 10)
 #define CLK_LOW __R30 = __R30 & ~(1 << 10)
 #define CS_HIGH __R30 = __R30 | (1 << 13) //  Chip select to HIGH
