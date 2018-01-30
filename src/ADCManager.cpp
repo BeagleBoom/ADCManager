@@ -96,7 +96,6 @@ int main(int argc, char **argv) {
             std::cout << "\033[2J\033[1;1H";
 
             for (int j = 0; j < 7; j++) {
-                std::cout << "j: " << j << " = " << std::hex << buffer[j] << std::endl;
 
                 if ((buffer[j] & 0x8000)) { // first bit is "1", so it's an GPIO value
                     // GPIO Input value
@@ -104,6 +103,7 @@ int main(int argc, char **argv) {
                     out.gpio6 = static_cast<bool>((value >> 6) & 1);
                     out.gpio7 = static_cast<bool>((value >> 7) & 1);
                 } else {
+                    std::cout << "ADC: " << j+1 << " = " << std::hex << buffer[j] << std::endl;
                     // ADC values
                     int16_t value = static_cast<int16_t>(buffer[j] & 0x0fff);
                     int tone = getTone(value);

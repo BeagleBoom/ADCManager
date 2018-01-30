@@ -195,7 +195,7 @@ int main(void) {
         uint16_t gpio_in = sendReceiveWord(0x00, 0x00);
 
         // configure ADC sequence to 0, 1, 2, 3, 4, 5 and repeat
-        sendWord(0x10, 0x3F); // configure ADC sequence to 2, 3 and repeat
+        sendWord(0x10, 0x3F);
         //sendWord(0x00, 0x00); // send NOP
 
         uint16_t adc0 = sendReceiveWord(0x00, 0x00);
