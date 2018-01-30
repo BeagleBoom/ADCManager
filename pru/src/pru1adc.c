@@ -199,8 +199,8 @@ int main(void) {
         sendWord(0x12, 0x3F);
         //sendWord(0x00, 0x00); // send NOP
 
-        uint16_t adc0 = 0x0000;//sendReceiveWord(0x00, 0x00);
-        uint16_t adc1 = 0x1000; //sendReceiveWord(0x00, 0x00);
+        uint16_t adc0 = sendReceiveWord(0x00, 0x00);0x0000;//sendReceiveWord(0x00, 0x00);
+        uint16_t adc1 = sendReceiveWord(0x00, 0x00);0x1000; //sendReceiveWord(0x00, 0x00);
         uint16_t adc2 = sendReceiveWord(0x00, 0x00);
         uint16_t adc3 = sendReceiveWord(0x00, 0x00);
         uint16_t adc4 = 0x4000; //sendReceiveWord(0x00, 0x00);
