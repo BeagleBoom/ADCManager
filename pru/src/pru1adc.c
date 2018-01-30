@@ -125,7 +125,7 @@ void initADC() {
     sendWord(0x05, 0xAC); // Reset Chip
     sendWord(0x5a, 0x00); // Internal reference always on
     sendWord(0x18, 0x10); // set ADC input to 2xV_ref (10V)
-    sendWord(0x20, 0x0C); // configure port 2, 3 as ADC
+    sendWord(0x20, 0x0F); // configure port 2, 3 as ADC
 }
 
 int main(void) {
@@ -196,11 +196,11 @@ int main(void) {
         uint16_t gpio_in = sendReceiveWord(0x00, 0x00);
 
         // configure ADC sequence to 0, 1, 2, 3, 4, 5 and repeat
-        sendWord(0x10, 0x0C);
+        sendWord(0x10, 0x0F);
         //sendWord(0x00, 0x00); // send NOP
 
-        uint16_t adc0 = 0x0000;//sendReceiveWord(0x00, 0x00);
-        uint16_t adc1 = 0x1000; //sendReceiveWord(0x00, 0x00);
+        uint16_t adc0 = sendReceiveWord(0x00, 0x00);
+        uint16_t adc1 = sendReceiveWord(0x00, 0x00);
         uint16_t adc2 = sendReceiveWord(0x00, 0x00);
         uint16_t adc3 = sendReceiveWord(0x00, 0x00);
         uint16_t adc4 = 0x4000; //sendReceiveWord(0x00, 0x00);
