@@ -204,7 +204,7 @@ int main(void) {
         uint16_t adc4 = sendReceiveWord(0x00, 0x00);
         uint16_t adc5 = sendReceiveWord(0x00, 0x00);
 
-        payload[0] = gpio_in;
+        payload[0] = gpio_in | 0x8000; // set first bit to "1" so we can see whether it's an GPIO or ADC value
         payload[1] = adc0;
         payload[2] = adc1;
         payload[3] = adc2;
