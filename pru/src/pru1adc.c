@@ -192,10 +192,10 @@ int main(void) {
     int adc2_sum = 0;
     int adc3_sum = 0;
     while (1) {
-        if(cnt == 64){
+        if(cnt == 16){
             cnt = 0;
-            payload[3] = adc2_sum >> 6;
-            payload[4] = adc3_sum >> 6;
+            payload[3] = adc2_sum >> 4;
+            payload[4] = adc3_sum >> 4;
 
             adc2_sum = 0;
             adc3_sum = 0;
