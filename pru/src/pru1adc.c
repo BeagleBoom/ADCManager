@@ -74,7 +74,7 @@ short sendSPICommand(char command) {
         if (bit) {
             __R30 = __R30 | (bit << 12);
         } else {
-            __R30 = __R30 & ~(bit << 0xEFFF);
+            __R30 = __R30 & 0xDFFF;
         }
 
         __delay_cycles(PULSEWIDTH);
