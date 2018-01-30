@@ -81,8 +81,8 @@ short sendSPICommand(char command) {
         CLK_LOW;
         __delay_cycles(PULSEWIDTH); //  Delay to allow settling.
         CLK_HIGH;
-        data = data << 1;           // Shift left; insert 0 at lsb.
         __delay_cycles(PULSEWIDTH);
+        data = data << 1;           // Shift left; insert 0 at lsb.
         if (__R31 & (1 << 8)) //  Probe MISO data from ADC.
             data = data | 1; // might be wrong! ReCheck!
         else
@@ -212,19 +212,19 @@ int main(void) {
             adc0 = 0xF0F0;
         }
         if (adc1 & 0x8000) {
-            adc1 = 0xF0F0;
+            adc1 = 0xF0F1;
         }
         if(adc2 & 0x8000){
-            adc2 = 0xF0F0;
+            adc2 = 0xF0F2;
         }
         if(adc3 & 0x8000){
-            adc3 = 0xF0F0;
+            adc3 = 0xF0F3;
         }
         if(adc4 & 0x8000){
-            adc4 = 0xF0F0;
+            adc4 = 0xF0F4;
         }
         if(adc5 & 0x8000){
-            adc5 = 0xF0F0;
+            adc5 = 0xF0F5;
         }
 
         payload[1] = adc0;
