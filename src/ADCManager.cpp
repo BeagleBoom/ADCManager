@@ -89,13 +89,13 @@ int main(int argc, char **argv) {
     std::cout << "... done!" << std::endl;
 
     while (true) {
-        readpru = read(pru_data, buffer, 14);
+        readpru = read(pru_data, buffer, 6);
         if (readpru == -1) break;
         if (readpru > 0) {
             ADCOut out;
             std::cout << "\033[2J\033[1;1H";
 
-            for (int j = 0; j < 7; j++) {
+            for (int j = 0; j < 3; j++) {
                 std::cout << "j: " << j << " = " << std::hex << buffer[j] << std::endl;
 
                 if ((buffer[j] & 0x8000)) { // first bit is "1", so it's an GPIO value
