@@ -24,7 +24,7 @@ struct ADCOut {
 
 void publish(ADCOut out, int queueValue) {
     MessageQueue queue = MessageQueue(queueValue);
-    std::cout << out.tone_adc02 << "; " << out.tone_adc03 << "; " << out.gpio7 << "; " << out.gpio6 << std::endl;
+    std::cout << out.adc0 << "; " << out.adc1 << "; " << out.tone_adc02 << "; " << out.tone_adc03 << "; " << out.adc4 << "; " << out.adc5 << "; " << out.gpio6 << "; " << out.gpio7 <<  std::endl;
     Event event = Event(EventType::ADC_VALUES);
     event.addString("ADC");
     event.addInt(0);
