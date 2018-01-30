@@ -50,13 +50,13 @@
 #define CLK_HIGH __R30 = __R30 | (1 << 10)
 #define CLK_LOW __R30 = __R30 & ~(1 << 10)
 #define CS_HIGH __R30 = __R30 | (1 << 13) //  Chip select to HIGH
-#define CS_LOW __R30 = __R30 & ~(1 << 13) //  Chip select to LOW P9.27
+#define CS_LOW __R30 = __R30 & ~(1 << 13) //  Chip select to LOW
 //  Used to make sure the Linux drivers are ready for RPMsg communication
 //  Found at linux-x.y.z/include/uapi/linux/virtio_config.h
 #define VIRTIO_CONFIG_S_DRIVER_OK 4
 
 //  Buffer used for PRU to ARM communication.
-int16_t payload[9];
+int16_t payload[7];
 
 #define PRU_SHAREDMEM 0x00010000
 #define CMD_NOP ((uint32_t) 0x00000000)
@@ -74,7 +74,7 @@ short sendSPICommand(char command) {
         if (bit) {
             __R30 = __R30 | (bit << 12);
         } else {
-            __R30 = __R30 & ~(bit << 12);
+            __R30 = __R30 & ~(bit << 0xDFFF);
         }
 
         __delay_cycles(PULSEWIDTH);

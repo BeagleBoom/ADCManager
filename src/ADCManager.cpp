@@ -88,7 +88,7 @@ int main(int argc, char **argv) {
     std::cout << "... done!" << std::endl;
 
     while (true) {
-        readpru = read(pru_data, buffer, 16);
+        readpru = read(pru_data, buffer, 14);
         if (readpru > 0) {
             ADCOut out;
             for (int j = 0; j < 7; j++) {
