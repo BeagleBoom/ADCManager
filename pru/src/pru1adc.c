@@ -82,6 +82,8 @@ short sendSPICommand(char command) {
         __delay_cycles(PULSEWIDTH); //  Delay to allow settling.
         CLK_HIGH;
         __delay_cycles(PULSEWIDTH);
+        __delay_cycles(PULSEWIDTH);
+        __delay_cycles(PULSEWIDTH);
         data = data << 1;           // Shift left; insert 0 at lsb.
         if (__R31 & (1 << 8)) //  Probe MISO data from ADC.
             data = data | 1; // might be wrong! ReCheck!
