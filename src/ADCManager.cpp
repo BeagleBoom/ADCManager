@@ -94,13 +94,12 @@ int main(int argc, char **argv) {
         if (readpru > 0) {
             ADCOut out;
             for (int j = 0; j < 7; j++) {
+
+                std::cout << "j: " << j << " = " << std::hex << buffer[j] << std::endl;
+
                 if ((buffer[j] & 0x8000)) { // first bit is "1", so it's an GPIO value
                     // GPIO Input value
                     int16_t value = buffer[j] & 0x00FF;
-                    std::cout << "BUFFER: " << std::hex << value
-                              << "; GPIO6: " << std::hex << ((value >> 6) & 1)
-                              << "; GPIO7: " << std::hex << ((value >> 7) & 1)
-                              << std::endl;
                     out.gpio6 = static_cast<bool>((value >> 6) & 1);
                     out.gpio7 = static_cast<bool>((value >> 7) & 1);
                 } else {
