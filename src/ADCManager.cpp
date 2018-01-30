@@ -103,7 +103,6 @@ int main(int argc, char **argv) {
                     out.gpio6 = static_cast<bool>((value >> 6) & 1);
                     out.gpio7 = static_cast<bool>((value >> 7) & 1);
                 } else {
-                    std::cout << "ADC: " << j-1 << " = " << std::hex << buffer[j] << std::dec << " (" << (buffer[j] & 0x0FFF) << ")" << std::endl;
                     // ADC values
                     int16_t value = static_cast<int16_t>(buffer[j] & 0x0fff);
                     int tone = getTone(value);
@@ -111,26 +110,32 @@ int main(int argc, char **argv) {
                     switch (adcIndex) {
                         case 0x0: {
                             out.adc0 = value;
+                            std::cout << "ADC0 = " << std::hex << value << std::dec << " (" << value << ")" << std::endl;
                             break;
                         }
                         case 0x1: {
                             out.adc1 = value;
+                            std::cout << "ADC1 = " << std::hex << value << std::dec << " (" << value << ")" << std::endl;
                             break;
                         }
                         case 0x2: {
                             out.tone_adc02 = tone;
+                            std::cout << "ADC2 = " << std::hex << value << std::dec << " (" << value << ") - tone: " << tone << std::endl;
                             break;
                         }
                         case 0x3: {
                             out.tone_adc03 = tone;
+                            std::cout << "ADC3 = " << std::hex << value << std::dec << " (" << value << ") - tone: " << tone << std::endl;
                             break;
                         }
                         case 0x4: {
                             out.adc4 = value;
+                            std::cout << "ADC4 = " << std::hex << value << std::dec << " (" << value << ")" << std::endl;
                             break;
                         }
                         case 0x5: {
                             out.adc5 = value;
+                            std::cout << "ADC5 = " << std::hex << value << std::dec << " (" << value << ")" << std::endl;
                             break;
                         }
 
