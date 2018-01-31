@@ -124,9 +124,9 @@ uint16_t sendReceiveWord(char d1, char d2) {
 }
 
 void initADC() {
-    sendWord(0x05, 0xAC); // Reset Chip
-    sendWord(0x5a, 0x00); // Internal reference always on
-    sendWord(0x18, 0x10); // set ADC input to 2xV_ref (10V)
+    sendWord(0x7D, 0xAC); // Reset Chip (Table 44) or:     sendWord(0x05, 0xAC); //
+    sendWord(0x5A, 0x00); // Internal reference always on (Table 42)
+    sendWord(0x18, 0x10); // set ADC input to 2xV_ref (5V) (Table 18)
     sendWord(0x20, 0x0C); // configure port 2, 3 as ADC
 }
 

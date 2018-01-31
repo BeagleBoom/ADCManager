@@ -3,7 +3,7 @@
 #include <EventQueue/MessageQueue.h>
 #include <EventQueue/EventType.h>
 
-#define REFERENCE_VCC 10
+#define REFERENCE_VCC 5
 
 
 int getTone(int16_t value) {
