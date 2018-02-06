@@ -128,6 +128,7 @@ void initADC() {
     sendWord(0x5A, 0x00); // Internal reference always on (Table 42)
     sendWord(0x18, 0x20); // set ADC input to 2xV_ref (5V) (Table 18)
     sendWord(0x20, 0x0C); // configure port 2, 3 as ADC
+    sendWord(0x30, 0xC0); // configure PullDown for pin 6,7
 }
 
 int main(void) {
