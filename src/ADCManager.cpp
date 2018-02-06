@@ -5,6 +5,8 @@
 
 #define REFERENCE_VCC 5
 
+bool sendChannel1 = false;
+bool sendChannel2 = false;
 
 int getTone(int16_t value) {
     float_t oneToneSize = 0xfff / (REFERENCE_VCC * 12);
@@ -28,27 +30,36 @@ void publish(ADCOut out, int queueValue) {
               << "; " << out.adc5 << "; " << out.gpio6 << "; " << out.gpio7 << std::endl;*/
     Event event = Event(EventType::ADC_VALUES);
     event.addString("ADC");
-    event.addInt(0);
-    event.addInt(out.adc0);
+    /*  enable if needed
+        event.addInt(0);
+        event.addInt(out.adc0);
 
-    event.addInt(1);
-    event.addInt(out.adc1);
-
+        event.addInt(1);
+        event.addInt(out.adc1);
+        */
     event.addInt(2);
-    event.addInt(out.tone_adc02);
-
+    if (sendChannel1) {
+        event.addInt(out.tone_adc02);
+    } else {
+        event.addInt(-1);
+    }
     event.addInt(3);
-    event.addInt(out.tone_adc03);
+    if (sendChannel2) {
+        event.addInt(out.tone_adc03);
+    } else {
+        event.addInt(-1);
+    }
 
-    event.addInt(4);
-    event.addInt(out.adc4);
+    /* enable if needed
+        event.addInt(4);
+        event.addInt(out.adc4);
 
-    event.addInt(5);
-    event.addInt(out.adc5);
+        event.addInt(5);
+        event.addInt(out.adc5);
+    */
 
     event.addInt(6);
     event.addInt(static_cast<int>(out.gpio6));
-
     event.addInt(7);
     event.addInt(static_cast<int>(out.gpio7));
 
@@ -93,18 +104,18 @@ int main(int argc, char **argv) {
         if (readpru == -1) break;
         if (readpru > 0) {
             ADCOut out;
-            std::cout << "\033[2J\033[1;1H";
-
             for (int j = 0; j < 7; j++) {
-
                 if ((buffer[j] & 0x8000)) { // first bit is "1", so it's an GPIO value
                     // GPIO Input value
                     int16_t value = buffer[j] & 0x00FF;
                     out.gpio6 = static_cast<bool>((value >> 6) & 1);
                     out.gpio7 = static_cast<bool>((value >> 7) & 1);
-                    std::cout << "GPIO6 = " << out.gpio6 << std::endl;
-                    std::cout << "GPIO7 = " << out.gpio7 << std::endl;
-
+                    if (!sendChannel1 && out.gpio6) {
+                        sendChannel1 = true;
+                    }
+                    if (!sendChannel2 && out.gpio7) {
+                        sendChannel2 = true;
+                    }
                 } else {
                     // ADC values
                     int16_t value = static_cast<int16_t>(buffer[j] & 0x0fff);
@@ -113,35 +124,28 @@ int main(int argc, char **argv) {
                     switch (adcIndex) {
                         case 0x0: {
                             out.adc0 = value;
-                            std::cout << "ADC0 = " << std::hex << value << std::dec << " (" << value << ")" << std::endl;
                             break;
                         }
                         case 0x1: {
                             out.adc1 = value;
-                            std::cout << "ADC1 = " << std::hex << value << std::dec << " (" << value << ")" << std::endl;
                             break;
                         }
                         case 0x2: {
                             out.tone_adc02 = tone;
-                            std::cout << "ADC2 = " << std::hex << value << std::dec << " (" << value << ") - tone: " << tone << std::endl;
                             break;
                         }
                         case 0x3: {
                             out.tone_adc03 = tone;
-                            std::cout << "ADC3 = " << std::hex << value << std::dec << " (" << value << ") - tone: " << tone << std::endl;
                             break;
                         }
                         case 0x4: {
                             out.adc4 = value;
-                            std::cout << "ADC4 = " << std::hex << value << std::dec << " (" << value << ")" << std::endl;
                             break;
                         }
                         case 0x5: {
                             out.adc5 = value;
-                            std::cout << "ADC5 = " << std::hex << value << std::dec << " (" << value << ")" << std::endl;
                             break;
                         }
-
                     }
                 }
             }
