@@ -102,6 +102,9 @@ int main(int argc, char **argv) {
                     int16_t value = buffer[j] & 0x00FF;
                     out.gpio6 = static_cast<bool>((value >> 6) & 1);
                     out.gpio7 = static_cast<bool>((value >> 7) & 1);
+                    std::cout << "GPIO6 = " << out.gpio6 << std::endl;
+                    std::cout << "GPIO7 = " << out.gpio7 << std::endl;
+
                 } else {
                     // ADC values
                     int16_t value = static_cast<int16_t>(buffer[j] & 0x0fff);
