@@ -166,26 +166,9 @@ int main(void) {
     //  2.  Initialization
     //  The data out line is connected to R30 bit 1.
     __R30 = 0x00000000;         //  Clear the output pin.
-    //  The sample clock is located at shared memory address 0x00010000.
-    //  Need a pointer for this address.  This is found in the linker file.
-    //  The address 0x0001_000 is PRU_SHAREDMEM.
-    uint32_t *clockPointer = (uint32_t *) 0x00010000;
 
     CS_HIGH;  // Initialize chip select HIGH.
     __delay_cycles(100000000); //  Allow chip to stabilize.
-    //  3.  SPI Data capture loop.  This captures numSamples data samples from the
-    //  ADC.
-    uint16_t dataCounter = 0; // Used to load data transmission buffer payloadOut;
-
-    //  The following is a hack to solve a problem with the loop running
-    // while(!(*clockPointer)){__delay_cycles(5);}  //  Hold until the Master
-    // clock from PRU1 goes high.
-
-    /* while (!(*clockPointer == 7)) {
-        __delay_cycles(5);
-    }*/ //  Hold until the Master clock from PRU1 goes high.
-
-
 
     initADC();
     int cnt = 0;
@@ -259,7 +242,4 @@ int main(void) {
 
         cnt++;
     } //  End data acquisition loop.
-
-    //   __R31 = 35;                      // PRUEVENT_0 on PRU0_R31_VEC_VALID
-    __halt(); // halt the PRU
 }
