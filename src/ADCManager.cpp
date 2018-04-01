@@ -8,6 +8,12 @@
 bool sendChannel1 = false;
 bool sendChannel2 = false;
 
+MessageQueue listeningQueue;
+bool canReadADCValues = false;
+bool canWriteOnMessageQueue = true;
+int queueListeningAddress = -1;
+
+
 int getTone(int16_t value) {
     float_t oneToneSize = 0xfff / (REFERENCE_VCC * 12);
     return (int) lround(0.5 + (value / oneToneSize));
@@ -70,20 +76,37 @@ int main(int argc, char **argv) {
     int pru_data, pru_clock; // file descriptors
     //  Open a file in write mode.
 
-    if (argc != 2) {
-        std::cout << "usage: " << argv[0] << " <Queue Channel Number>" << std::endl;
+    if((argc != 2) && (argc != 3)) {
+        std::cout << "usage: " << argv[0] << " <Queue Destination Address>" << std::endl;
+        std::cout << "\tor: " << argv[0] << " <Queue Destination Address> <Queue Listening Address>" << std::endl;
         return -1;
     }
 
     int queueValue = std::stoi(argv[1]);
+
+    if(argc == 3) {
+        queueListeningAddress = std::stoi(argv[2]);
+        listeningQueue = MessageQueue(queueListeningAddress);
+        canWriteOnMessageQueue = false;
+        canReadADCValues = false;
+        std::cout << "Listening on Queue-Address: " << queueReceivingAddress << std::endl;
+    } else {
+        queueListeningAddress = -1;
+        canReadADCValues = true;
+        canWriteOnMessageQueue = true;
+        std::cout << "Don't listening on any Queue-Address, just firing ADC Values to the Queue-Address: " << queueValue << std::endl;
+    }
+
 
     int16_t buffer[490];
     //  Now, open the PRU character device.
     //  Read data from it in chunks and write to the named pipe.
     ssize_t readpru, prime_char, pru_clock_command;
     pru_data = open("/dev/rpmsg_pru30", O_RDWR);
-    if (pru_data < 0)
+    if (pru_data < 0) {
         std::cout << "Failed to open pru character device rpmsg_pru30." << std::endl;
+    }
+
     //  The character device must be "primed".
     prime_char = write(pru_data, "prime", 6);
     if (prime_char < 0)
@@ -100,60 +123,89 @@ int main(int argc, char **argv) {
     std::cout << "... done!" << std::endl;
 
     while (true) {
-        readpru = read(pru_data, buffer, 14);
-        if (readpru == -1) break;
-        if (readpru > 0) {
-            ADCOut out;
-            for (int j = 0; j < 7; j++) {
-                if ((buffer[j] & 0x8000)) { // first bit is "1", so it's an GPIO value
-                    // GPIO Input value
-                    int16_t value = buffer[j] & 0x00FF;
-                    out.gpio6 = static_cast<bool>((value >> 6) & 1);
-                    out.gpio7 = static_cast<bool>((value >> 7) & 1);
-                    if (!sendChannel1 && out.gpio6) {
-                        sendChannel1 = true;
-                    }
-                    if (!sendChannel2 && out.gpio7) {
-                        sendChannel2 = true;
-                    }
-                } else {
-                    // ADC values
-                    int16_t value = static_cast<int16_t>(buffer[j] & 0x0fff);
-                    int tone = getTone(value);
-                    int16_t adcIndex = buffer[j] >> 12;
-                    switch (adcIndex) {
-                        case 0x0: {
-                            out.adc0 = value;
-                            break;
+        canWriteOnMessageQueue = true;
+
+        // Getting commands from MessageQueue:
+        if(queueListeningAddress != -1) {
+            // Reading Events from Queue:
+            Event event = listeningQueue.receiveNoWait();
+            switch (e.getType()) {
+                case EventType::ADC_START:
+                    canReadADCValues = true;
+
+                    /* One-Time mechanism to prevent old data from being sent on ADC_START,
+                     * so the first values will be ignored from RAM cache (between PRU and CPU) */
+                    canWriteOnMessageQueue = false;
+
+                    std:cout << "Event:\t\"ADC_START\" received" << std::endl;
+                    break;
+
+                case EventType::ADC_STOP:
+                    canReadADCValues = false;
+                    std:cout << "Event:\t\"ADC_STOP\" received" << std::endl;
+                    break;
+            }
+        }
+
+        if(canReadADCValues) {
+
+            readpru = read(pru_data, buffer, 14);
+            if (readpru == -1) break;
+            if (readpru > 0) {
+                ADCOut out;
+                for (int j = 0; j < 7; j++) {
+                    if ((buffer[j] & 0x8000)) { // first bit is "1", so it's an GPIO value
+                        // GPIO Input value
+                        int16_t value = buffer[j] & 0x00FF;
+                        out.gpio6 = static_cast<bool>((value >> 6) & 1);
+                        out.gpio7 = static_cast<bool>((value >> 7) & 1);
+                        if (!sendChannel1 && out.gpio6) {
+                            sendChannel1 = true;
                         }
-                        case 0x1: {
-                            out.adc1 = value;
-                            break;
+                        if (!sendChannel2 && out.gpio7) {
+                            sendChannel2 = true;
                         }
-                        case 0x2: {
-                            out.tone_adc02 = tone;
-                            break;
-                        }
-                        case 0x3: {
-                            out.tone_adc03 = tone;
-                            break;
-                        }
-                        case 0x4: {
-                            out.adc4 = value;
-                            break;
-                        }
-                        case 0x5: {
-                            out.adc5 = value;
-                            break;
+                    } else {
+                        // ADC values
+                        int16_t value = static_cast<int16_t>(buffer[j] & 0x0fff);
+                        int tone = getTone(value);
+                        int16_t adcIndex = buffer[j] >> 12;
+                        switch (adcIndex) {
+                            case 0x0: {
+                                out.adc0 = value;
+                                break;
+                            }
+                            case 0x1: {
+                                out.adc1 = value;
+                                break;
+                            }
+                            case 0x2: {
+                                out.tone_adc02 = tone;
+                                break;
+                            }
+                            case 0x3: {
+                                out.tone_adc03 = tone;
+                                break;
+                            }
+                            case 0x4: {
+                                out.adc4 = value;
+                                break;
+                            }
+                            case 0x5: {
+                                out.adc5 = value;
+                                break;
+                            }
                         }
                     }
                 }
+
+                if(canWriteOnMessageQueue) {
+                    publish(out, queueValue);
+                }
+
+                // tell PRU that we processed the last values
+                write(pru_data, "ok", 3);
             }
-            publish(out, queueValue);
-
-            // tell PRU that we processed the values
-            write(pru_data, "ok", 3);
         }
-
     }
 }
