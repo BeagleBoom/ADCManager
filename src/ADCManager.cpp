@@ -8,7 +8,6 @@
 bool sendChannel1 = false;
 bool sendChannel2 = false;
 
-MessageQueue listeningQueue;
 bool canReadADCValues = false;
 bool canWriteOnMessageQueue = true;
 int queueListeningAddress = -1;
@@ -83,13 +82,14 @@ int main(int argc, char **argv) {
     }
 
     int queueValue = std::stoi(argv[1]);
+    MessageQueue listeningQueue = MessageQueue(queueValue);
 
     if(argc == 3) {
         queueListeningAddress = std::stoi(argv[2]);
         listeningQueue = MessageQueue(queueListeningAddress);
         canWriteOnMessageQueue = false;
         canReadADCValues = false;
-        std::cout << "Listening on Queue-Address: " << queueReceivingAddress << std::endl;
+        std::cout << "Listening on Queue-Address: " << queueListeningAddress << std::endl;
     } else {
         queueListeningAddress = -1;
         canReadADCValues = true;
@@ -129,7 +129,7 @@ int main(int argc, char **argv) {
         if(queueListeningAddress != -1) {
             // Reading Events from Queue:
             Event event = listeningQueue.receiveNoWait();
-            switch (e.getType()) {
+            switch (event.getType()) {
                 case EventType::ADC_START:
                     canReadADCValues = true;
 
@@ -137,12 +137,15 @@ int main(int argc, char **argv) {
                      * so the first values will be ignored from RAM cache (between PRU and CPU) */
                     canWriteOnMessageQueue = false;
 
-                    std:cout << "Event:\t\"ADC_START\" received" << std::endl;
+                    std::cout << "Event:\t\"ADC_START\" received" << std::endl;
                     break;
 
                 case EventType::ADC_STOP:
                     canReadADCValues = false;
-                    std:cout << "Event:\t\"ADC_STOP\" received" << std::endl;
+                    std::cout << "Event:\t\"ADC_STOP\" received" << std::endl;
+                    break;
+
+                default:
                     break;
             }
         }
