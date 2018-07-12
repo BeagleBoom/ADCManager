@@ -34,7 +34,7 @@ void publish(ADCOut out, int queueValue) {
     std::cout << out.adc0 << "; " << out.adc1 << "; " << out.tone_adc02 << "; " << out.tone_adc03 << "; " << out.adc4
               << "; " << out.adc5 << "; " << out.gpio6 << "; " << out.gpio7 << std::endl;
     Event event = Event(EventType::ADC_VALUES);
-    event.addString("ADC");
+
     /*  enable if needed
         event.addInt(0);
         event.addInt(out.adc0);
