@@ -1,0 +1,123 @@
+/*
+ * Copyright (C) 2014 Noralf Tronnes
+ *
+ * tinylcd35
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ */
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "ti,beaglebone", "ti,beaglebone-black";
+
+	/* identification */
+	part-number = "NEOSEC-TINYLCD35";
+	version = "00A0";
+
+	/* state the resources this cape uses */
+	exclusive-use =
+		/* the pin header uses */
+		"P9.22",	/* spi0_sclk */
+		"P9.21",	/* spi0_d0 MISO */
+		"P9.18",	/* spi1_d1 MOSI */
+		"P9.17",	/* spi1_cs0 */
+		"P9.16",	/* gpio1_19 - reset */
+		"P9.15",	/* gpio1_16 - dc */
+		/* the hardware ip uses */
+		"gpio1_19",
+		"gpio1_16",
+		"ehrpwm1A",
+		"spi1";
+
+	fragment@0 {
+		target = <&am33xx_pinmux>;
+		__overlay__ {
+			bb_spi1_pins: pinmux_bb_spi1_pins {
+				pinctrl-single,pins = <
+					0x190 0x33	/* mcasp0_aclkx.spi1_sclk, INPUT_PULLUP | MODE3 */
+					0x194 0x33	/* mcasp0_fsx.spi1_d0, INPUT_PULLUP | MODE3 */
+					0x198 0x13	/* mcasp0_axr0.spi1_d1, OUTPUT_PULLUP | MODE3 */
+					0x19c 0x13	/* mcasp0_ahclkr.spi1_cs0, OUTPUT_PULLUP | MODE3 */
+					0x164 0x12	/* eCAP0_in_PWM0_out.spi1_cs1 OUTPUT_PULLUP | MODE2 */
+				>;
+			};
+
+			lcd_ctrl_pinmux: lcd_ctrl_pins {
+				pinctrl-single,pins = <
+					0x04c 0x17	/* P9.16 gpio1_16  OUTPUT_PULLUP | MODE7 */
+					0x040 0x17	/* P9.15 gpio1_16  OUTPUT_PULLUP | MODE7 */
+				>;
+			};
+
+			pwm_bl_pins: pinmux_pwm_bl_pins {
+				pinctrl-single,pins = <
+					0x48 0x06       /* ehrpwm1a, MODE6 */
+				>;
+			};
+		};
+	};
+
+	fragment@1 {
+		target = <&spi1>;
+		__overlay__ {
+			status = "okay";
+			pinctrl-names = "default";
+			pinctrl-0 = <&bb_spi1_pins>;
+
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			lcd@0{
+				compatible = "neosec,tinylcd";
+				reg = <0>;
+
+				pinctrl-names = "default";
+				pinctrl-0 = <&lcd_ctrl_pinmux>;
+
+				spi-max-frequency = <48000000>;
+				rotate = <270>;
+				bgr;
+				fps = <50>;
+				buswidth = <8>;
+				reset-gpios = <&gpio2 16 0>;
+				dc-gpios = <&gpio2 28 0>;
+
+				debug = <3>;
+			};
+		};
+	};
+
+	fragment@2 {
+		target = <&epwmss1>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@3 {
+		target = <&ehrpwm1>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4 {
+		target = <&ocp>;
+		__overlay__ {
+			backlight {
+				compatible = "pwm-backlight";
+				pinctrl-names = "default";
+				pinctrl-0 = <&pwm_bl_pins>;
+				status = "okay";
+
+				pwms = <&ehrpwm1 0 500000 0>;
+				pwm-names = "backlight";
+				brightness-levels = <0 4 8 16 32 64 128 255>;
+				default-brightness-level = <7>; /* index to the array above */
+			};
+		};
+	};
+};

@@ -113,7 +113,6 @@
                 >;
             };
 
-
             sampler_adc: SAMPLER_ADC {
                 pinctrl-single,pins = <
                 0x0e0 0x26 /* ADC MISO */

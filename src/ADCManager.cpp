@@ -45,14 +45,23 @@ void publish(ADCOut out, int queueValue) {
     event.addInt(2);
     if (sendChannel1) {
         event.addInt(out.tone_adc02);
+        event.addInt(6);
+        event.addInt(static_cast<int>(out.gpio6));
     } else {
-        event.addInt(-1);
+        event.addInt(0);
+        event.addInt(6);
+        event.addInt(0);
+
     }
     event.addInt(3);
     if (sendChannel2) {
         event.addInt(out.tone_adc03);
+        event.addInt(7);
+        event.addInt(static_cast<int>(out.gpio7));
     } else {
-        event.addInt(-1);
+        event.addInt(0);
+        event.addInt(7);
+        event.addInt(0);
     }
 
     /* enable if needed
@@ -63,10 +72,6 @@ void publish(ADCOut out, int queueValue) {
         event.addInt(out.adc5);
     */
 
-    event.addInt(6);
-    event.addInt(static_cast<int>(out.gpio6));
-    event.addInt(7);
-    event.addInt(static_cast<int>(out.gpio7));
 
     queue.send(event);
 }
