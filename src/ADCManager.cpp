@@ -227,5 +227,6 @@ int main(int argc, char **argv) {
                 write(pru_data, "ok", 3);
             }
         }
+        usleep(1000);
     }
 }
