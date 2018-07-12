@@ -19,8 +19,8 @@ int getTone(int16_t value) {
 }
 
 struct ADCOut {
-    bool gpio6;
-    bool gpio7;
+    bool gpio6 = false;
+    bool gpio7 = false;
     int tone_adc02 = 0;
     int tone_adc03 = 0;
     int adc0 = 0;
@@ -73,9 +73,10 @@ void publish(ADCOut out, int queueValue) {
 
 int main(int argc, char **argv) {
     int pru_data, pru_clock; // file descriptors
+    ADCOut oldData;
     //  Open a file in write mode.
 
-    if((argc != 2) && (argc != 3)) {
+    if ((argc != 2) && (argc != 3)) {
         std::cout << "usage: " << argv[0] << " <Queue Destination Address>" << std::endl;
         std::cout << "\tor: " << argv[0] << " <Queue Destination Address> <Queue Listening Address>" << std::endl;
         return -1;
@@ -84,7 +85,7 @@ int main(int argc, char **argv) {
     int queueValue = std::stoi(argv[1]);
     MessageQueue listeningQueue = MessageQueue(queueValue);
 
-    if(argc == 3) {
+    if (argc == 3) {
         queueListeningAddress = std::stoi(argv[2]);
         listeningQueue = MessageQueue(queueListeningAddress);
         canWriteOnMessageQueue = false;
@@ -94,7 +95,8 @@ int main(int argc, char **argv) {
         queueListeningAddress = -1;
         canReadADCValues = true;
         canWriteOnMessageQueue = true;
-        std::cout << "Don't listening on any Queue-Address, just firing ADC Values to the Queue-Address: " << queueValue << std::endl;
+        std::cout << "Don't listening on any Queue-Address, just firing ADC Values to the Queue-Address: " << queueValue
+                  << std::endl;
     }
 
 
@@ -126,7 +128,7 @@ int main(int argc, char **argv) {
         canWriteOnMessageQueue = true;
 
         // Getting commands from MessageQueue:
-        if(queueListeningAddress != -1) {
+        if (queueListeningAddress != -1) {
             // Reading Events from Queue:
             Event event = listeningQueue.receiveNoWait();
             switch (event.getType()) {
@@ -150,7 +152,7 @@ int main(int argc, char **argv) {
             }
         }
 
-        if(canReadADCValues) {
+        if (canReadADCValues) {
 
             readpru = read(pru_data, buffer, 14);
             if (readpru == -1) break;
@@ -202,9 +204,19 @@ int main(int argc, char **argv) {
                     }
                 }
 
-                if(canWriteOnMessageQueue) {
-                    publish(out, queueValue);
+                if (oldData.adc0 != out.adc0 ||
+                    oldData.adc1 != out.adc1 ||
+                    oldData.tone_adc02 != out.tone_adc02 ||
+                    oldData.tone_adc03 != out.tone_adc03 ||
+                    oldData.adc4 != out.adc4 ||
+                    oldData.adc5 != out.adc5) {
+                    memcpy(&oldData, &out, sizeof(ADCOut));
+
+                    if (canWriteOnMessageQueue) {
+                        publish(out, queueValue);
+                    }
                 }
+
 
                 // tell PRU that we processed the last values
                 write(pru_data, "ok", 3);
