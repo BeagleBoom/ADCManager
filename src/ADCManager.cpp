@@ -11,7 +11,7 @@ bool sendChannel2 = false;
 bool canReadADCValues = false;
 bool canWriteOnMessageQueue = true;
 int queueListeningAddress = -1;
-
+int queueValue = 3;
 
 int getTone(int16_t value) {
     float_t oneToneSize = 0xfff / (REFERENCE_VCC * 12);
@@ -73,7 +73,7 @@ void publish(ADCOut out, int queueValue) {
     */
 
 
-    queue.send(event);
+    queue.send(event, queueValue);
 }
 
 int main(int argc, char **argv) {
@@ -87,7 +87,7 @@ int main(int argc, char **argv) {
         return -1;
     }
 
-    int queueValue = std::stoi(argv[1]);
+    queueValue = std::stoi(argv[1]);
     MessageQueue listeningQueue = MessageQueue(queueValue);
 
     if (argc == 3) {
