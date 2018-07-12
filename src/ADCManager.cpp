@@ -209,12 +209,8 @@ int main(int argc, char **argv) {
                     }
                 }
 
-                if (oldData.adc0 != out.adc0 ||
-                    oldData.adc1 != out.adc1 ||
-                    oldData.tone_adc02 != out.tone_adc02 ||
-                    oldData.tone_adc03 != out.tone_adc03 ||
-                    oldData.adc4 != out.adc4 ||
-                    oldData.adc5 != out.adc5) {
+                if (oldData.tone_adc02 != out.tone_adc02 ||
+                    oldData.gpio6 != out.gpio6) {
                     memcpy(&oldData, &out, sizeof(ADCOut));
 
                     if (canWriteOnMessageQueue) {
