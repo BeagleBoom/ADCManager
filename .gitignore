@@ -7,3 +7,5 @@ cmake-build-debug/
 /CMakeCache.txt
 /ADCManager.cbp
 /CMakeFiles/
+.DS_Store
+/pru/demos
