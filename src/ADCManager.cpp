@@ -77,10 +77,10 @@ void publish(ADCOut out, int queueValue) {
 }
 
 int main(int argc, char **argv) {
-    int pru_data, pru_clock; // file descriptors
+    int pru_data, pru_clock;
     ADCOut oldData;
-    //  Open a file in write mode.
 
+    // Check given parameters
     if ((argc != 2) && (argc != 3)) {
         std::cout << "usage: " << argv[0] << " <Queue Destination Address>" << std::endl;
         std::cout << "\tor: " << argv[0] << " <Queue Destination Address> <Queue Listening Address>" << std::endl;
@@ -158,7 +158,7 @@ int main(int argc, char **argv) {
         }
 
         if (canReadADCValues) {
-
+            // finally get the data from the PRU
             readpru = read(pru_data, buffer, 14);
             if (readpru == -1) break;
             if (readpru > 0) {
@@ -208,7 +208,8 @@ int main(int argc, char **argv) {
                         }
                     }
                 }
-
+                // Only publish adc_values if they didn't change
+                // Todo: Check other channels
                 if (oldData.tone_adc02 != out.tone_adc02 ||
                     oldData.gpio6 != out.gpio6) {
                     memcpy(&oldData, &out, sizeof(ADCOut));
@@ -217,7 +218,6 @@ int main(int argc, char **argv) {
                         publish(out, queueValue);
                     }
                 }
-
 
                 // tell PRU that we processed the last values
                 write(pru_data, "ok", 3);

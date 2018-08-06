@@ -1,4 +1,4 @@
-//  This code runs in PRU1.
+//  This code runs in PRU0.
 //  The clock output test pin is P8.30
 //  The clock is started by writing a code
 //  to a device driver opened by this file.

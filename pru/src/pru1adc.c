@@ -1,14 +1,14 @@
-// S.211 Tabelle
-//
-// pru0adc.c
+//  This code runs in PRU0.
+// pru1adc.c
 //  Attempt to duplicate Derek Molloy's
 //  SPI ADC read program in C from assembly.
-//  Chip Select:  P9.27 pr1_pru0_pru_r30_5 // ändern: P8.20 pr1_pru1_pru_r30_13 0xFFFFDFFF
-//  MOSI:         P9.29 pr1_pru0_pru_r30_1 // ändern: P8.21 pr1_pru1_pru_r30_12
-//  MISO:         P9.28 pr1_pru0_pru_r31_3 // ändern: P8.27 pr1_pru1_pru_r31_8
-//  SPI CLK:      P9.30 pr1_pru0_pru_r30_2 // ändern: P8.28 pr1_pru1_pru_r30_10
-//  Sample Clock: P8.46 pr1_pru1_pru_r30_1 // P8.46 pr1_pru1_pru_r30_1 (testing only)
-//  Copyright (C) 2016  Gregory Raven
+//  Chip Select:  P8.20 pr1_pru1_pru_r30_13
+//  MOSI:         P8.21 pr1_pru1_pru_r30_12
+//  MISO:         P8.27 pr1_pru1_pru_r31_8
+//  SPI CLK:      P8.28 pr1_pru1_pru_r30_10
+//  Sample Clock: P8.46 pr1_pru1_pru_r30_1 (testing only)
+//  Copyright (C) 2016  Gregory Raven, changed, improved and made compatible with an AD5592R by:
+//  Friedemann Stoffregen, Lasse Kathke, Torben Hartmann
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -34,10 +34,6 @@
 // Define remoteproc related variables.
 #define HOST_INT ((uint32_t)1 << 30)
 
-//  The PRU-ICSS system events used for RPMsg are defined in the Linux device
-//  tree.
-//  PRU0 uses system event 16 (to ARM) and 17 (from ARM)
-//  PRU1 uses system event 18 (to ARM) and 19 (from ARM)
 #define TO_ARM_HOST 18
 #define FROM_ARM_HOST 19
 
@@ -66,6 +62,11 @@ volatile register uint32_t __R30;
 volatile register uint32_t __R31;
 uint32_t spiCommand;
 
+/**
+ * Transmit an SPI Command
+ * @param command  a SPI command
+ * @return the read data
+ */
 short sendSPICommand(char command) {
     short data = 0x00;          //  Initialize data.
     for (int i = 7; i >= 0; i--) {
@@ -93,6 +94,11 @@ short sendSPICommand(char command) {
     return data;
 }
 
+/**
+ * Send a word
+ * @param d1 first part of the command
+ * @param d2 second part of the command
+ */
 void sendWord(char d1, char d2) {
     CLK_HIGH;
     __delay_cycles(PULSEWIDTH);
@@ -107,7 +113,12 @@ void sendWord(char d1, char d2) {
     CS_HIGH;
     __delay_cycles(PULSEWIDTH);
 }
-
+/**
+ * Send a word
+ * @param d1 first part of the command
+ * @param d2 second part of the command
+ * @return the return values from the SPI-command
+ */
 uint16_t sendReceiveWord(char d1, char d2) {
     CLK_HIGH;
     __delay_cycles(PULSEWIDTH);
@@ -123,6 +134,9 @@ uint16_t sendReceiveWord(char d1, char d2) {
     return (((r1 << 8) & 0xFF00) | (r2 & 0x00FF))  >> 1;
 }
 
+/**
+ * initialize the ADC
+ */
 void initADC() {
     sendWord(0x7D, 0xAC); // Reset Chip (Table 44) or:     sendWord(0x05, 0xAC); //
     sendWord(0x5A, 0x00); // Internal reference always on (Table 42)
@@ -175,6 +189,7 @@ int main(void) {
     int adc2_sum = 0;
     int adc3_sum = 0;
     while (1) {
+        // create a mean of 16 values
         if(cnt == 16){
             cnt = 0;
             payload[3] = adc2_sum >> 4;
